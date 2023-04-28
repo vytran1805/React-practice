@@ -1,4 +1,4 @@
-import { MouseEvent, useState } from "react";
+import { Fragment, MouseEvent, useState } from "react";
 // {items:[], heading: string}
 interface ListGroupProps {
   items: string[];
@@ -14,7 +14,7 @@ function ListGroup({ items, heading, onSelectItem }: ListGroupProps) {
   // const message = items.length === 0 ? <p>No item found</p> : null;
   return (
     //the line below is translated to React.createElement('h1');
-    <>
+    <Fragment>
       <h1>{heading}</h1>
       {items.length === 0 && <p>No item found</p>}
       <ul className="list-group">
@@ -41,7 +41,7 @@ function ListGroup({ items, heading, onSelectItem }: ListGroupProps) {
           )
         )}
       </ul>
-    </>
+    </Fragment>
   );
 }
 export default ListGroup;
