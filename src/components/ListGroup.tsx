@@ -1,18 +1,21 @@
 import { MouseEvent, useState } from "react";
-function ListGroup() {
-  let items = ["New York", "San Francisco", "Tokyo", "London", "Paris"];
-  //let selectedIndex = 0; // 0 means the first item is selected
+// {items:[], heading: string}
+interface ListGroupProps {
+  items: string[];
+  heading: string;
+  //event that has parameter type string and return void
+  onSelectItem: (item: string) => void;
+}
+function ListGroup({ items, heading, onSelectItem }: ListGroupProps) {
   // Hook
   const [selectedIndex, setSelectedIndex] = useState(-1);
   // Event handler: Type of event in React is MouseEvent => import MouseEvent from react
   const handleClick = (event: MouseEvent) => console.log(event);
   // const message = items.length === 0 ? <p>No item found</p> : null;
-
-  // Convert each item to <li> element, use curly bracket to render data dynamically
   return (
     //the line below is translated to React.createElement('h1');
     <>
-      <h1>List</h1>
+      <h1>{heading}</h1>
       {items.length === 0 && <p>No item found</p>}
       <ul className="list-group">
         {items.map(
@@ -29,6 +32,7 @@ function ListGroup() {
               key={item}
               onClick={() => {
                 setSelectedIndex(index);
+                onSelectItem(item);
               }} //we don't call the function, we just pass the reference
             >
               {item}
