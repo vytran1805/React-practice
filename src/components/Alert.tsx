@@ -1,3 +1,4 @@
+import React from "react";
 import { ReactNode, useState } from "react";
 
 // this interface works as argument of the constructor

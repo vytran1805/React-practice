@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import "bootstrap/dist/css/bootstrap.css";
 
 // Use ReactDOM library (specify for) to render component tree inside an element 'Root'
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
