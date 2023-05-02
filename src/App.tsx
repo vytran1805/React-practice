@@ -18,7 +18,7 @@ function App() {
         backgroundColor: "#FFFFCC",
       }}
     >
-      <Like></Like>
+      <Like onClick={() => console.log("Clicked")}></Like>
       <CiBowlNoodles color="red" size="40" />
       <ListGroup
         items={items}
