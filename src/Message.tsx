@@ -1,9 +1,10 @@
 import React from "react";
-
+let count = 0;
 // PascalCasing
-function Message() {
-  const name = "Vy";
+const Message = () => {
+  console.log("Message called ", count);
+  count++;
   // JSX: Javascrip XML
-  return <h1>Hello, {name}</h1>;
-}
+  return <div>Message {count}</div>;
+};
 export default Message;
