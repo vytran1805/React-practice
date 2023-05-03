@@ -10,6 +10,7 @@ import Message from "./Message";
 import produce from "immer";
 import Cart from "./components/Cart";
 import NavBar from "./components/NavBar";
+import ExpandableText from "./components/ExpandableText";
 function App() {
   //React stores these values as an array [false, true]
   // it does not aware of the variable names
@@ -117,8 +118,16 @@ function App() {
     });
   };
 
+  // May 03, 2023: exercise: Building an expandable text component
   return (
     <div>
+      <ExpandableText maxChars={10}>
+        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fugit
+        praesentium inventore cum impedit distinctio dicta, officia, ab
+        explicabo aut quo tempore doloremque saepe dolores! Optio velit
+        excepturi laborum r epellendus quia?
+      </ExpandableText>
+      <br />
       <NavBar cartItemsCount={cartItems.length} />
       {/* once user clicks on the Clear btn, setCartItems to empty Array */}
       <Cart cartItems={cartItems} onClear={() => setCartItems([])} />
