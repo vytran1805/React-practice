@@ -6,6 +6,7 @@ import "./App.css";
 import Like from "./components/Like";
 import React from "react";
 import { CiBowlNoodles } from "react-icons/ci";
+import Form from "./components/Form";
 function App() {
   const [alertVisible, setAlertVisibility] = useState(false);
   const items = ["New York", "San Francisco", "Tokyo", "London", "Paris"];
@@ -14,11 +15,11 @@ function App() {
   };
   return (
     <div
-      style={{
-        backgroundColor: "#FFFFCC",
-      }}
+    // style={{
+    //   backgroundColor: "#FFFFCC",
+    // }}
     >
-      <Like></Like>
+      {/* <Like></Like>
       <CiBowlNoodles color="red" size="40" />
       <ListGroup
         items={items}
@@ -31,7 +32,8 @@ function App() {
       <Button color="primary" onClick={() => setAlertVisibility(true)}>
         My
         <strong> button</strong>
-      </Button>
+      </Button> */}
+      <Form />
     </div>
   );
 }
