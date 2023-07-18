@@ -7,6 +7,7 @@ import Like from "./components/Like";
 import React from "react";
 import { CiBowlNoodles } from "react-icons/ci";
 import Form from "./components/Form";
+import FormZod from "./components/FormZod";
 function App() {
   const [alertVisible, setAlertVisibility] = useState(false);
   const items = ["New York", "San Francisco", "Tokyo", "London", "Paris"];
@@ -33,7 +34,8 @@ function App() {
         My
         <strong> button</strong>
       </Button> */}
-      <Form />
+      {/* <Form /> */}
+      <FormZod/>
     </div>
   );
 }
