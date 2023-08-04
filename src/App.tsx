@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import "./App.css";
+import ProductList from "./components/ProductList";
 function App() {
   //use Ref hook to get reference to the input field
   const ref = useRef<HTMLInputElement>(null);
@@ -16,6 +17,7 @@ function App() {
   return (
     <div>
       <input ref={ref} type="text" className="form-control" />
+      <ProductList />
     </div>
   );
 }
