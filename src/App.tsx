@@ -1,41 +1,21 @@
-import { Children, useState } from "react";
-import Alert from "./components/Alert";
-import Button from "./components/Button/Button";
-import ListGroup from "./components/ListGroup";
+import { useEffect, useRef } from "react";
 import "./App.css";
-import Like from "./components/Like";
-import React from "react";
-import { CiBowlNoodles } from "react-icons/ci";
-import Form from "./components/Form";
-import FormZod from "./components/FormZod";
 function App() {
-  const [alertVisible, setAlertVisibility] = useState(false);
-  const items = ["New York", "San Francisco", "Tokyo", "London", "Paris"];
-  const handleSelectedItem = (item: string) => {
-    console.log(item);
-  };
+  //use Ref hook to get reference to the input field
+  const ref = useRef<HTMLInputElement>(null);
+
+  // after Render
+  useEffect(() => {
+    // SIDE EFFECT: we are changing the state of the DOM => no longer the pure component
+    if (ref.current) ref.current.focus(); // if ref.current is not null, move the cursor(or keyboard focus) to the input element
+  });
+
+  useEffect(() => {
+    document.title = "My App";
+  });
   return (
-    <div
-    // style={{
-    //   backgroundColor: "#FFFFCC",
-    // }}
-    >
-      {/* <Like></Like>
-      <CiBowlNoodles color="red" size="40" />
-      <ListGroup
-        items={items}
-        heading="Cities"
-        onSelectItem={handleSelectedItem}
-      ></ListGroup>
-      {alertVisible && (
-        <Alert onClose={() => setAlertVisibility(false)}>My Alert</Alert>
-      )}
-      <Button color="primary" onClick={() => setAlertVisibility(true)}>
-        My
-        <strong> button</strong>
-      </Button> */}
-      {/* <Form /> */}
-      <FormZod/>
+    <div>
+      <input ref={ref} type="text" className="form-control" />
     </div>
   );
 }
