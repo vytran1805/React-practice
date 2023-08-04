@@ -1,41 +1,19 @@
-import { Children, useState } from "react";
-import Alert from "./components/Alert";
-import Button from "./components/Button/Button";
-import ListGroup from "./components/ListGroup";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
-import Like from "./components/Like";
-import React from "react";
-import { CiBowlNoodles } from "react-icons/ci";
-import Form from "./components/Form";
-import FormZod from "./components/FormZod";
+import ProductList from "./components/ProductList";
+const connect = () => console.log('connecting');
+const disconnect = () => console.log('disconnecting');
+ 
 function App() {
-  const [alertVisible, setAlertVisibility] = useState(false);
-  const items = ["New York", "San Francisco", "Tokyo", "London", "Paris"];
-  const handleSelectedItem = (item: string) => {
-    console.log(item);
-  };
+ useEffect(()=>{
+  // connecting...
+  connect();
+  // then return the cleanup function that will execute the disconnect()
+  return () => disconnect();  //this it will stop the connection
+ })
   return (
-    <div
-    // style={{
-    //   backgroundColor: "#FFFFCC",
-    // }}
-    >
-      {/* <Like></Like>
-      <CiBowlNoodles color="red" size="40" />
-      <ListGroup
-        items={items}
-        heading="Cities"
-        onSelectItem={handleSelectedItem}
-      ></ListGroup>
-      {alertVisible && (
-        <Alert onClose={() => setAlertVisibility(false)}>My Alert</Alert>
-      )}
-      <Button color="primary" onClick={() => setAlertVisibility(true)}>
-        My
-        <strong> button</strong>
-      </Button> */}
-      {/* <Form /> */}
-      <FormZod/>
+    <div>
+
     </div>
   );
 }
