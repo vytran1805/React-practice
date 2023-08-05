@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import "./App.css";
 
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, CanceledError } from "axios";
 import { map } from "zod";
 // define the shape of our user to avoid accessing invalid properties
 interface User {
@@ -15,19 +15,19 @@ function App() {
   const [error, setError] = useState("");
   // use Effect hook to call the server
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const res = await axios.get<User[]>(
-          "https://jsonplaceholder.typicode.com/xusers"
-        );
-        setUsers(res.data);
-        // .then((res) => setUsers(res.data))
-        // .catch((err) => setError(err.message));
-      } catch (err) {
-        setError((err as AxiosError).message);
-      }
-    };
-    fetchUsers();
+    // this is a built-in class in modern browser that allows us to cancel or abort asynchronous operations
+    const controller = new AbortController();
+    
+    axios
+      .get<User[]>("https://jsonplaceholder.typicode.com/xusers", {
+        signal: controller.signal,
+      })
+      .then((res) => setUsers(res.data))
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        setError(err.message);
+      });
+    return () => controller.abort();
   }, []);
 
   return (
