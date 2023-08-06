@@ -13,19 +13,25 @@ function App() {
   const [users, setUsers] = useState<User[]>([]);
   // declare a state variable for storing errors when fetching data
   const [error, setError] = useState("");
+  const [isLoading, setLoading] = useState(false);
   // use Effect hook to call the server
   useEffect(() => {
     // this is a built-in class in modern browser that allows us to cancel or abort asynchronous operations
     const controller = new AbortController();
-    
+
+    setLoading(true);
     axios
-      .get<User[]>("https://jsonplaceholder.typicode.com/xusers", {
+      .get<User[]>("https://jsonplaceholder.typicode.com/users", {
         signal: controller.signal,
       })
-      .then((res) => setUsers(res.data))
+      .then((res) => {
+        setUsers(res.data);
+        setLoading(false);
+      })
       .catch((err) => {
         if (err instanceof CanceledError) return;
         setError(err.message);
+        setLoading(false);
       });
     return () => controller.abort();
   }, []);
@@ -33,6 +39,7 @@ function App() {
   return (
     <>
       {error && <p className="text-danger">{error}</p>}
+      {isLoading === true && <div className="spinner-border"></div>}
       <ul>
         {users.map((user) => (
           <li key={user.id}>{user.name}</li>
