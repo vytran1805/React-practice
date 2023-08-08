@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import "./App.css";
 
 import axios, { AxiosError, CanceledError } from "axios";
-import { map } from "zod";
+import { map, set } from "zod";
 // define the shape of our user to avoid accessing invalid properties
 interface User {
   id: number;
@@ -36,13 +36,46 @@ function App() {
     return () => controller.abort();
   }, []);
 
+  const deleteUser = (user: User) => {
+    const originalUsers = [...users];
+    // update the UI first
+    setUsers(users.filter((u) => u.id !== user.id));
+    // Then call the server to save the change
+    axios
+      .delete("https://jsonplaceholder.typicode.com/users/" + user.id)
+      .catch((err) => {
+        setError(err.message);
+      });
+
+    /**
+     * Pessimistic Update
+     */
+    // axios
+    //   .delete("https://jsonplaceholder.typicode.com/users/" + user.id)
+    //   .then((res) => setUsers(users.filter((u) => u.id !== user.id)))
+    //   .catch((err) => {
+    //     setError(err.message);
+    //     setUsers(originalUsers);
+    //   });
+  };
   return (
     <>
       {error && <p className="text-danger">{error}</p>}
       {isLoading === true && <div className="spinner-border"></div>}
-      <ul>
+      <ul className="list-group">
         {users.map((user) => (
-          <li key={user.id}>{user.name}</li>
+          <li
+            key={user.id}
+            className="list-group-item d-flex justify-content-between"
+          >
+            {user.name}
+            <button
+              className="btn btn-outline-danger"
+              onClick={() => deleteUser(user)}
+            >
+              Delete
+            </button>
+          </li>
         ))}
       </ul>
     </>
