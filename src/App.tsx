@@ -36,6 +36,10 @@ function App() {
     return () => controller.abort();
   }, []);
 
+  /**
+   * Delete a user
+   * @param user user to be deleted
+   */
   const deleteUser = (user: User) => {
     const originalUsers = [...users];
     // update the UI first
@@ -59,6 +63,9 @@ function App() {
     //   });
   };
 
+  /**
+   * Add user to the users list
+   */
   const addUser = () => {
     const originalUsers = [...users];
     // newUser variable
@@ -75,6 +82,18 @@ function App() {
       });
   };
 
+  const updateUser = (user: User) => {
+    const originalUsers = [...users];
+    const updatedUser = { ...user, name: user.name + " updated!" };
+    // loop through the users array, if u.id===user.id => return updatedUser, otherwise return u
+    setUsers(users.map((u) => (u.id === user.id ? updatedUser : u)));
+    axios
+      .put("https://jsonplaceholder.typicode.com/users/" + user.id, updateUser)
+      .catch((err) => {
+        setError(err.message);
+        setUsers(originalUsers);
+      });
+  };
   return (
     <>
       {error && <p className="text-danger">{error}</p>}
@@ -82,6 +101,7 @@ function App() {
       <button className="btn btn-primary mb-3" onClick={addUser}>
         Add User
       </button>
+
       <ul className="list-group">
         {users.map((user) => (
           <li
@@ -89,12 +109,20 @@ function App() {
             className="list-group-item d-flex justify-content-between"
           >
             {user.name}
-            <button
-              className="btn btn-outline-danger"
-              onClick={() => deleteUser(user)}
-            >
-              Delete
-            </button>
+            <div>
+              <button
+                className="btn btn-outline-secondary mx-3"
+                onClick={() => updateUser(user)}
+              >
+                Update
+              </button>
+              <button
+                className="btn btn-outline-danger"
+                onClick={() => deleteUser(user)}
+              >
+                Delete
+              </button>
+            </div>
           </li>
         ))}
       </ul>
