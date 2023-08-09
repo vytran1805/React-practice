@@ -33,23 +33,13 @@ function App() {
    */
   const deleteUser = (user: User) => {
     const originalUsers = [...users];
+    const { request } = userService.deleteUser(user.id);
     // update the UI first
     setUsers(users.filter((u) => u.id !== user.id));
     // Then call the server to save the change
-    apiClient.delete("/users/" + user.id).catch((err) => {
+    request.catch((err) => {
       setError(err.message);
     });
-
-    /**
-     * Pessimistic Update
-     */
-    // axios
-    //   .delete("https://jsonplaceholder.typicode.com/users/" + user.id)
-    //   .then((res) => setUsers(users.filter((u) => u.id !== user.id)))
-    //   .catch((err) => {
-    //     setError(err.message);
-    //     setUsers(originalUsers);
-    //   });
   };
 
   /**
@@ -59,10 +49,10 @@ function App() {
     const originalUsers = [...users];
     // newUser variable
     const newUser = { id: 0, name: "Vy" };
+    const { request } = userService.addUser(newUser);
     // Update the UI: spread over the users, add newUser to the array
     setUsers([...users, newUser]);
-    apiClient
-      .post("/users", newUser)
+    request
       // if the call to the server is successful, refresh the list with the new user
       .then(({ data: savedUser }) => setUsers([...users, savedUser]))
       .catch((err) => {
@@ -74,9 +64,10 @@ function App() {
   const updateUser = (user: User) => {
     const originalUsers = [...users];
     const updatedUser = { ...user, name: user.name + " updated!" };
+    const { request } = userService.updateUser(updatedUser);
     // loop through the users array, if u.id===user.id => return updatedUser, otherwise return u
     setUsers(users.map((u) => (u.id === user.id ? updatedUser : u)));
-    apiClient.put("/users/" + user.id, updateUser).catch((err) => {
+    request.catch((err) => {
       setError(err.message);
       setUsers(originalUsers);
     });
