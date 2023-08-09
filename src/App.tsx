@@ -58,10 +58,30 @@ function App() {
     //     setUsers(originalUsers);
     //   });
   };
+
+  const addUser = () => {
+    const originalUsers = [...users];
+    // newUser variable
+    const newUser = { id: 0, name: "Vy" };
+    // Update the UI: spread over the users, add newUser to the array
+    setUsers([...users, newUser]);
+    axios
+      .post("https://jsonplaceholder.typicode.com/users", newUser)
+      // if the call to the server is successful, refresh the list with the new user
+      .then(({ data: savedUser }) => setUsers([...users, savedUser]))
+      .catch((err) => {
+        setError(err.message);
+        setUsers(originalUsers);
+      });
+  };
+
   return (
     <>
       {error && <p className="text-danger">{error}</p>}
       {isLoading === true && <div className="spinner-border"></div>}
+      <button className="btn btn-primary mb-3" onClick={addUser}>
+        Add User
+      </button>
       <ul className="list-group">
         {users.map((user) => (
           <li
