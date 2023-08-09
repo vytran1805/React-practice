@@ -2,11 +2,8 @@ import { useEffect, useState } from "react";
 import "./App.css";
 
 import apiClient, { CanceledError } from "./services/api-client";
-// define the shape of our user to avoid accessing invalid properties
-interface User {
-  id: number;
-  name: string;
-}
+import userService, { User } from "./services/userSevice";
+
 function App() {
   // declare a state variable for storing our users, initialize this to an empty array
   const [users, setUsers] = useState<User[]>([]);
@@ -15,14 +12,9 @@ function App() {
   const [isLoading, setLoading] = useState(false);
   // use Effect hook to call the server
   useEffect(() => {
-    // this is a built-in class in modern browser that allows us to cancel or abort asynchronous operations
-    const controller = new AbortController();
-
     setLoading(true);
-    apiClient
-      .get<User[]>("/users", {
-        signal: controller.signal,
-      })
+    const { request, cancel } = userService.getAllUser();
+    request
       .then((res) => {
         setUsers(res.data);
         setLoading(false);
@@ -32,7 +24,7 @@ function App() {
         setError(err.message);
         setLoading(false);
       });
-    return () => controller.abort();
+    return () => cancel();
   }, []);
 
   /**
