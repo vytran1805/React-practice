@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 
-import axios, { AxiosError, CanceledError } from "axios";
-import { map, set } from "zod";
+import apiClient, { CanceledError } from "./services/api-client";
 // define the shape of our user to avoid accessing invalid properties
 interface User {
   id: number;
@@ -20,8 +19,8 @@ function App() {
     const controller = new AbortController();
 
     setLoading(true);
-    axios
-      .get<User[]>("https://jsonplaceholder.typicode.com/users", {
+    apiClient
+      .get<User[]>("/users", {
         signal: controller.signal,
       })
       .then((res) => {
@@ -36,16 +35,18 @@ function App() {
     return () => controller.abort();
   }, []);
 
+  /**
+   * Delete a user
+   * @param user user to be deleted
+   */
   const deleteUser = (user: User) => {
     const originalUsers = [...users];
     // update the UI first
     setUsers(users.filter((u) => u.id !== user.id));
     // Then call the server to save the change
-    axios
-      .delete("https://jsonplaceholder.typicode.com/users/" + user.id)
-      .catch((err) => {
-        setError(err.message);
-      });
+    apiClient.delete("/users/" + user.id).catch((err) => {
+      setError(err.message);
+    });
 
     /**
      * Pessimistic Update
@@ -59,14 +60,17 @@ function App() {
     //   });
   };
 
+  /**
+   * Add user to the users list
+   */
   const addUser = () => {
     const originalUsers = [...users];
     // newUser variable
     const newUser = { id: 0, name: "Vy" };
     // Update the UI: spread over the users, add newUser to the array
     setUsers([...users, newUser]);
-    axios
-      .post("https://jsonplaceholder.typicode.com/users", newUser)
+    apiClient
+      .post("/users", newUser)
       // if the call to the server is successful, refresh the list with the new user
       .then(({ data: savedUser }) => setUsers([...users, savedUser]))
       .catch((err) => {
@@ -75,6 +79,16 @@ function App() {
       });
   };
 
+  const updateUser = (user: User) => {
+    const originalUsers = [...users];
+    const updatedUser = { ...user, name: user.name + " updated!" };
+    // loop through the users array, if u.id===user.id => return updatedUser, otherwise return u
+    setUsers(users.map((u) => (u.id === user.id ? updatedUser : u)));
+    apiClient.put("/users/" + user.id, updateUser).catch((err) => {
+      setError(err.message);
+      setUsers(originalUsers);
+    });
+  };
   return (
     <>
       {error && <p className="text-danger">{error}</p>}
@@ -82,6 +96,7 @@ function App() {
       <button className="btn btn-primary mb-3" onClick={addUser}>
         Add User
       </button>
+
       <ul className="list-group">
         {users.map((user) => (
           <li
@@ -89,12 +104,20 @@ function App() {
             className="list-group-item d-flex justify-content-between"
           >
             {user.name}
-            <button
-              className="btn btn-outline-danger"
-              onClick={() => deleteUser(user)}
-            >
-              Delete
-            </button>
+            <div>
+              <button
+                className="btn btn-outline-secondary mx-3"
+                onClick={() => updateUser(user)}
+              >
+                Update
+              </button>
+              <button
+                className="btn btn-outline-danger"
+                onClick={() => deleteUser(user)}
+              >
+                Delete
+              </button>
+            </div>
           </li>
         ))}
       </ul>
