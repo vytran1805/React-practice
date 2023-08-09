@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./App.css";
 
 import { CanceledError } from "./services/api-client";
-import userService, { User } from "./services/userSevice";
+import userService, { User } from "./services/user-sevice";
 
 function App() {
   // declare a state variable for storing our users, initialize this to an empty array
@@ -13,7 +13,7 @@ function App() {
   // use Effect hook to call the server
   useEffect(() => {
     setLoading(true);
-    const { request, cancel } = userService.getAllUser();
+    const { request, cancel } = userService.getAll<User>();
     request
       .then((res) => {
         setUsers(res.data);
@@ -33,7 +33,7 @@ function App() {
    */
   const deleteUser = (user: User) => {
     const originalUsers = [...users];
-    const { request } = userService.deleteUser(user.id);
+    const { request } = userService.delete(user.id);
     // update the UI first
     setUsers(users.filter((u) => u.id !== user.id));
     // Then call the server to save the change
@@ -49,7 +49,7 @@ function App() {
     const originalUsers = [...users];
     // newUser variable
     const newUser = { id: 0, name: "Vy" };
-    const { request } = userService.addUser(newUser);
+    const { request } = userService.add(newUser);
     // Update the UI: spread over the users, add newUser to the array
     setUsers([...users, newUser]);
     request
@@ -64,7 +64,7 @@ function App() {
   const updateUser = (user: User) => {
     const originalUsers = [...users];
     const updatedUser = { ...user, name: user.name + " updated!" };
-    const { request } = userService.updateUser(updatedUser);
+    const { request } = userService.update(updatedUser);
     // loop through the users array, if u.id===user.id => return updatedUser, otherwise return u
     setUsers(users.map((u) => (u.id === user.id ? updatedUser : u)));
     request.catch((err) => {
