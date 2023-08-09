@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 
-import axios, { AxiosError, CanceledError } from "axios";
-import { map, set } from "zod";
+import apiClient, { CanceledError } from "./services/api-client";
 // define the shape of our user to avoid accessing invalid properties
 interface User {
   id: number;
@@ -20,8 +19,8 @@ function App() {
     const controller = new AbortController();
 
     setLoading(true);
-    axios
-      .get<User[]>("https://jsonplaceholder.typicode.com/users", {
+    apiClient
+      .get<User[]>("/users", {
         signal: controller.signal,
       })
       .then((res) => {
@@ -45,11 +44,9 @@ function App() {
     // update the UI first
     setUsers(users.filter((u) => u.id !== user.id));
     // Then call the server to save the change
-    axios
-      .delete("https://jsonplaceholder.typicode.com/users/" + user.id)
-      .catch((err) => {
-        setError(err.message);
-      });
+    apiClient.delete("/users/" + user.id).catch((err) => {
+      setError(err.message);
+    });
 
     /**
      * Pessimistic Update
@@ -72,8 +69,8 @@ function App() {
     const newUser = { id: 0, name: "Vy" };
     // Update the UI: spread over the users, add newUser to the array
     setUsers([...users, newUser]);
-    axios
-      .post("https://jsonplaceholder.typicode.com/users", newUser)
+    apiClient
+      .post("/users", newUser)
       // if the call to the server is successful, refresh the list with the new user
       .then(({ data: savedUser }) => setUsers([...users, savedUser]))
       .catch((err) => {
@@ -87,12 +84,10 @@ function App() {
     const updatedUser = { ...user, name: user.name + " updated!" };
     // loop through the users array, if u.id===user.id => return updatedUser, otherwise return u
     setUsers(users.map((u) => (u.id === user.id ? updatedUser : u)));
-    axios
-      .put("https://jsonplaceholder.typicode.com/users/" + user.id, updateUser)
-      .catch((err) => {
-        setError(err.message);
-        setUsers(originalUsers);
-      });
+    apiClient.put("/users/" + user.id, updateUser).catch((err) => {
+      setError(err.message);
+      setUsers(originalUsers);
+    });
   };
   return (
     <>
