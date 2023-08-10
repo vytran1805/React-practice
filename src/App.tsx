@@ -3,29 +3,10 @@ import "./App.css";
 
 import { CanceledError } from "./services/api-client";
 import userService, { User } from "./services/user-sevice";
+import useUsers from "./components/hooks/useUsers";
 
 function App() {
-  // declare a state variable for storing our users, initialize this to an empty array
-  const [users, setUsers] = useState<User[]>([]);
-  // declare a state variable for storing errors when fetching data
-  const [error, setError] = useState("");
-  const [isLoading, setLoading] = useState(false);
-  // use Effect hook to call the server
-  useEffect(() => {
-    setLoading(true);
-    const { request, cancel } = userService.getAll<User>();
-    request
-      .then((res) => {
-        setUsers(res.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        if (err instanceof CanceledError) return;
-        setError(err.message);
-        setLoading(false);
-      });
-    return () => cancel();
-  }, []);
+  const { users, error, isLoading, setUsers, setError } = useUsers();
 
   /**
    * Delete a user
