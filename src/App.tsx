@@ -3,7 +3,7 @@ import "./App.css";
 
 import { CanceledError } from "./services/api-client";
 import userService, { User } from "./services/user-sevice";
-import useUsers from "./components/hooks/useUsers";
+import useUsers from "./hooks/useUsers";
 
 function App() {
   const { users, error, isLoading, setUsers, setError } = useUsers();

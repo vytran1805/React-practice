@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import userSevice, { User } from "../../services/user-sevice";
-import { CanceledError } from "../../services/api-client";
+import userSevice, { User } from "../services/user-sevice";
+import { CanceledError } from "../services/api-client";
 
 const useUsers = () => {
   // declare a state variable for storing our users, initialize this to an empty array
