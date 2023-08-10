@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./App.css";
 
 import apiClient, { CanceledError } from "./services/api-client";
-import userService, { User } from "./services/userSevice";
+import userService, { User } from "./services/user-sevice";
 
 function App() {
   // declare a state variable for storing our users, initialize this to an empty array
