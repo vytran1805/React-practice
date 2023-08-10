@@ -1,31 +1,12 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
-import apiClient, { CanceledError } from "./services/api-client";
+import { CanceledError } from "./services/api-client";
 import userService, { User } from "./services/user-sevice";
+import useUsers from "./components/hooks/useUsers";
 
 function App() {
-  // declare a state variable for storing our users, initialize this to an empty array
-  const [users, setUsers] = useState<User[]>([]);
-  // declare a state variable for storing errors when fetching data
-  const [error, setError] = useState("");
-  const [isLoading, setLoading] = useState(false);
-  // use Effect hook to call the server
-  useEffect(() => {
-    setLoading(true);
-    const { request, cancel } = userService.getAllUser();
-    request
-      .then((res) => {
-        setUsers(res.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        if (err instanceof CanceledError) return;
-        setError(err.message);
-        setLoading(false);
-      });
-    return () => cancel();
-  }, []);
+  const { users, error, isLoading, setUsers, setError } = useUsers();
 
   /**
    * Delete a user
@@ -33,23 +14,13 @@ function App() {
    */
   const deleteUser = (user: User) => {
     const originalUsers = [...users];
+    const { request } = userService.delete(user.id);
     // update the UI first
     setUsers(users.filter((u) => u.id !== user.id));
     // Then call the server to save the change
-    apiClient.delete("/users/" + user.id).catch((err) => {
+    request.catch((err) => {
       setError(err.message);
     });
-
-    /**
-     * Pessimistic Update
-     */
-    // axios
-    //   .delete("https://jsonplaceholder.typicode.com/users/" + user.id)
-    //   .then((res) => setUsers(users.filter((u) => u.id !== user.id)))
-    //   .catch((err) => {
-    //     setError(err.message);
-    //     setUsers(originalUsers);
-    //   });
   };
 
   /**
@@ -59,10 +30,10 @@ function App() {
     const originalUsers = [...users];
     // newUser variable
     const newUser = { id: 0, name: "Vy" };
+    const { request } = userService.add(newUser);
     // Update the UI: spread over the users, add newUser to the array
     setUsers([...users, newUser]);
-    apiClient
-      .post("/users", newUser)
+    request
       // if the call to the server is successful, refresh the list with the new user
       .then(({ data: savedUser }) => setUsers([...users, savedUser]))
       .catch((err) => {
@@ -74,9 +45,10 @@ function App() {
   const updateUser = (user: User) => {
     const originalUsers = [...users];
     const updatedUser = { ...user, name: user.name + " updated!" };
+    const { request } = userService.update(updatedUser);
     // loop through the users array, if u.id===user.id => return updatedUser, otherwise return u
     setUsers(users.map((u) => (u.id === user.id ? updatedUser : u)));
-    apiClient.put("/users/" + user.id, updateUser).catch((err) => {
+    request.catch((err) => {
       setError(err.message);
       setUsers(originalUsers);
     });
